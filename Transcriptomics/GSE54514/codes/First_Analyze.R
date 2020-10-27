@@ -1,9 +1,9 @@
 #Bruno Rossi Carmo
-#20/10/2020
+#27/10/2020
 #brunorossicarmo@usp.br
 
 #|--------------------------First Analyze--------------------------|
-#Diretórios:
+#DiretÃ³rios:
 dir.main <- "C:\\Users\\bruno\\Desktop\\Usp\\Laboratorio\\CRID\\Codigos\\LIMMA\\GSE54514" #Coloque seu diretorio do arquivo
 setwd(dir.main)
 
@@ -33,7 +33,7 @@ eset <- exprs(GSE_1)
 #Raw Expression file:
 write.table(eset,file = "raw_expression_set.tsv", sep = "\t",row.names=T,col.names=NA)
 
-#Checar Normalização:
+#Checar NormalizaÃ§Ã£o:
 png(file = "raw_exp_Set.PNG", width = 5*300,height = 5*300,res = 300,pointsize = 8)
 boxplot(eset, col = "red")
 dev.off() #Fecha documento.
@@ -43,7 +43,7 @@ png(file = "raw_dens_exp.PNG", width = 5*300,height = 5*300,res = 300,pointsize 
 densityPlot(eset, sampGroups = colnames(eset))
 dev.off() #Fecha documento.
 
-#Anotações:
+#AnotaÃ§Ãµes:
 probe_ids <- featureNames(GSE_1)
 write.table(probe_ids, file = "probes_id.txt", row.names = F, col.names = F, quote = F)
 
@@ -51,14 +51,14 @@ write.table(probe_ids, file = "probes_id.txt", row.names = F, col.names = F, quo
 samp <- pData(GSE_1)
 write.table(samp, file = "metadados.tsv",sep = "\t",row.names=F,col.names=T)
 
-#Dados de Expressão e Design Matrix:
+#Dados de ExpressÃ£o e Design Matrix:
 choices <- factor(samp$`group_day:ch1`)
 design <- model.matrix(~0+choices)
 colnames(design) <- levels(choices)
 
 
 
-#--------------------------------------Comparação 1:--------------------------------------------#
+#--------------------------------------ComparaÃ§Ã£o 1:--------------------------------------------#
 #Fit:
 fit <- lmFit(eset,design)
 contrasts <- makeContrasts(NS_D1-S_D1, levels=design)
@@ -93,8 +93,8 @@ tab1_unique <- tab1_unique[!tab1_unique$symbol == "",]                   #Retira
 eset_v2 <- as.data.frame(eset[rownames(tab1_unique),])
 eset_v2$symbol <- tab1_unique$symbol
 
-#Inclusão de Tabela:
-tab1_unique$de <- "no_sig"                                                        #Informação de Regulação.
+#InclusÃ£o de Tabela:
+tab1_unique$de <- "no_sig"                                                        #InformaÃ§Ã£o de RegulaÃ§Ã£o.
 tab1_unique$de[tab1_unique$P.Value < 0.05 & tab1_unique$logFC >= 0.5] <- "up"     #Genes Up Regulated (logFC > 0.5).
 tab1_unique$de[tab1_unique$P.Value < 0.05 & tab1_unique$logFC <= -0.5] <- "down"  #Genes Down Regulated (logFC <= -0.5).
 
