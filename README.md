@@ -1,4 +1,4 @@
-   ![BioInformaticXs](images/V2.jpg)
+   ![BioInformaticXs](images/V3.PNG)
    
 # 🧬BioInformaticXs🧬 # 
 
