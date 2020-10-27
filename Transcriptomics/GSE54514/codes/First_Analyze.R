@@ -4,7 +4,7 @@
 
 #|--------------------------First Analyze--------------------------|
 #Diretórios:
-dir.main <- "C:\\Users\\bruno\\Desktop\\Usp\\Laboratorio\\CRID\\Codigos\\LIMMA\\GSE54514" #Coloque seu diretorio do arquivo
+dir.main <- "C:your_pathway\\GSE54514" #Coloque seu diretorio do arquivo (Separe com "\\")
 setwd(dir.main)
 
 #Bibliotecas:
