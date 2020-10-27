@@ -8,6 +8,7 @@ dir.main <- "C:your_pathway\\GSE54514" #Coloque seu diretorio do arquivo (Separe
 setwd(dir.main)
 
 #Bibliotecas:
+#Obs:Para instalar alguma, use "install.packages("name")
 #Bio:
 library("BiocManager")
 library(GEOquery)
