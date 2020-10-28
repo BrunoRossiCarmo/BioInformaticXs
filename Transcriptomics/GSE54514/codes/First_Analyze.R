@@ -26,9 +26,9 @@ library(annotate)
 library(minfi)
 
 #Carregando o arquivo de Series contendo as samples
-GSE_1 <- getGEO(filename = "GSE54514_series_matrix.txt.gz") 
+GSE_1 <- getGEO(filename = "GSE54514_series_matrix.txt.gz")   #Carregar dados de Expressão.
 
-#Matriz normalizada
+#Matriz de Expressão:
 eset <- exprs(GSE_1)
 
 #Raw Expression file:
