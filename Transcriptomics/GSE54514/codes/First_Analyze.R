@@ -100,9 +100,9 @@ tab1_unique$de[tab1_unique$P.Value < 0.05 & tab1_unique$logFC >= 0.5] <- "up"   
 tab1_unique$de[tab1_unique$P.Value < 0.05 & tab1_unique$logFC <= -0.5] <- "down"  #Genes Down Regulated (logFC <= -0.5).
 
 #Ajuste e Montagem: (Obs: "%>% - Pipe: Possibilita que o argumento da esquerda seja o primeiro parametro da direita.)
-eset_v2_new <- eset_v2 %>% select(symbol, everything())
+eset_v2_new <- eset_v2 %>% dplyr::select(symbol, everything())
 write.table(eset_v2_new,file = "Optimized_Express.tsv",sep = "\t",row.names=T,col.names=NA)
-tab1_unique_new <- tab1_unique %>% select(symbol, everything())
+tab1_unique_new <- tab1_unique %>% dplyr::select(symbol, everything())
 write.table(tab1_unique_new,file = "All_Data_Reg.tsv",sep = "\t",row.names=T,col.names=NA)
 
 #VolcanoPlot 1:
@@ -119,7 +119,7 @@ ggplot(tab1_unique_new, aes(x= logFC, y= -log10(P.Value), shape=de, color=de, si
         geom_vline(xintercept = c(0), linetype="dotted", color= "black", size= 0.8)+
         labs(title = paste0("Comparison: NS_D1 vs S_D1"),x="Log2FoldChange", y = "-log10(P-Value)")
 dev.off()
-       
+
 
 #Heatmap Preparation:
 top10 <- head(tab1_unique_new, n=10)
