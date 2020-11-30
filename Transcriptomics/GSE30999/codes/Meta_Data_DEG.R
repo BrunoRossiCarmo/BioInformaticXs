@@ -3,10 +3,10 @@
 #brunorossicarmo@usp.br
 
 #Estudo oferecido em: (https://www.bioconductor.org/packages/release/bioc/html/MetaVolcanoR.html).
-#ESTUDO N√O ORIGINAL:
+#ESTUDO N√ÉO ORIGINAL:
 #Prada C, Lima D, Nakaya H (2020). MetaVolcanoR: Gene Expression Meta-analysis Visualization Tool. R package version 1.2.0.#
 
-dir.main <- "C:\\Users\\bruno\\Desktop\\Usp\\Laboratorio\\CRID\\Codigos\\LIMMA\\GSE33099" #Coloque seu diretorio do arquivo
+dir.main <- "C:\\Users\\" #Coloque seu diretorio do arquivo
 setwd(dir.main)
 
 #Bibliotecas:
@@ -17,7 +17,7 @@ library(ExpressionAtlas)
 library(limma)
 library(MetaVolcanoR)
 
-#Dados de Express„o (Resultado Primeiro Code)
+#Dados de Express√£o (Resultado Primeiro Code)
 diffexplist <- list(diffexp)          #Transformar em Lista.
 class(diffexplist)
 
@@ -38,12 +38,12 @@ meta_degs_rem <- rem_mv(diffexp=diffexplist,
                        draw='HTML',
                        ncores=1)
 
-#Print REM (VariaÁ„o dos Genes)
+#Print REM (Varia√ß√£o dos Genes)
 png(file= "plot_meta_degs_rem.png",width = 850, height = 642)
 meta_degs_rem@MetaVolcano
 dev.off()
 
-#DrawForest (HTML/VariaÁ„o do Gene)
+#DrawForest (HTML/Varia√ß√£o do Gene)
 draw_forest(remres=meta_degs_rem,
             gene="MMP9",
             genecol="Symbol", 
