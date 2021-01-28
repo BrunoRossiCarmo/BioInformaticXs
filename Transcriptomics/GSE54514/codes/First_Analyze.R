@@ -54,7 +54,7 @@ write.table(samp, file = "metadados.tsv",sep = "\t",row.names=F,col.names=T)
 
 #Dados de Expressão e Design Matrix:
 choices <- factor(samp$`group_day:ch1`)
-design <- model.matrix(~0+choices)
+design <- model.matrix(~0+choices)      #"+0" é utilizado para não incluir coluna de intercepto e sim incluir uma coluna para cada grupo.
 colnames(design) <- levels(choices)
 
 
