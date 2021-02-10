@@ -4,7 +4,7 @@
 #Available in: https: https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE113941
 
 #Directory:
-dir.main <- "C:\\Users\\bruno\\Desktop\\Usp\\Laboratorio\\CRID\\Projetos\\Isaac_Succinato\\GSE113941" #Meu Diretório.
+dir.main <- "C:\\your_path" #Seu DiretÃ³rio.
 setwd(dir.main)
 
 
@@ -34,7 +34,7 @@ names(expS)
 
 
 #Filter (CPM):
-#Tirar genes de baixa expressão.
+#Tirar genes de baixa expressÃ£o.
 keep <- rowSums(cpm(expS)>2) >=4  #CPM = Counts p/ million.
 expS_filtr <- expS[keep,]
 dim(expS)
@@ -118,7 +118,7 @@ tab1 <- data.frame(qlf$table)
 tab1 = tab1[order(tab1[,'PValue'],decreasing = FALSE),]
 genes_id <- row.names(tab1) 
 write.table(genes_id,file = "Genes_Annot.txt",row.names = F, col.names = F, quote = F)
-genes <- read.delim("mart_export.txt") #Pegar anotações direto do Ensembl.
+genes <- read.delim("mart_export.txt") #Pegar anotaÃ§Ãµes direto do Ensembl.
 
 
 #Annotate Pt.2:
@@ -254,7 +254,7 @@ pheatmap(exp_top25,
 dev.off()
 
 
-#Seps (Tirar aqueles que não são DEG):
+#Seps (Tirar aqueles que nÃ£o sÃ£o DEG):
 idents <- tab1_unique_new[!tab1_unique_new$de=="no_sig",]
 
 
