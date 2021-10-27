@@ -1,4 +1,6 @@
-![BioInformaticXs](images/bioinf.GIF)
+<center>
+   ![BioInformaticXs](images/bioinf.gif)
+</center>
    
 # <center>🧬BioInformaticXs🧬</center> # 
 
