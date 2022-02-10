@@ -1,0 +1,181 @@
+#Bruno Rossi Carmo
+#03/11/2021
+#gse154659: 
+
+#Directory:
+dir.main <- "C:\\Users\\bruno\\Desktop\\Usp\\Laboratorio\\CRID\\Projetos\\Succinato\\scRNA\\gse154659" #Meu
+setwd(dir.main)
+id <- "gse154659"
+
+#Libraries:
+#Biology:
+library("BiocManager")
+library("Seurat")
+library(sctransform)
+
+#Others:
+library(devtools)
+library(dplyr)
+library(tidyr)
+library(patchwork)
+library(Matrix)
+library(ggplot2)
+library(readxl)
+
+#For memory:
+memory.limit(9999999999)
+
+#Reading data:
+ATK <- readRDS("rds/Atf3_WT_KO_Raw_counts.RDS")
+C57 <- readRDS("rds/C57_Raw_counts.RDS")
+C57@Dimnames[[2]]
+c57_true_Paclitaxel <-C57[,grep("Paclitaxel",C57@Dimnames[[2]])]
+c57_true_Control <- C57[,grep("Naive",C57@Dimnames[[2]])]
+
+
+#Creating Seurat Object 2:
+drg_C57_Paclitaxel <- CreateSeuratObject(counts = c57_true_Paclitaxel , project = "C57_pa",min.features = 500)
+drg_C57_Paclitaxel@meta.data
+
+#Analysing Just The Treat Data
+"Mitochondrial genes:"
+drg_C57_Paclitaxel <- PercentageFeatureSet(drg_C57_Paclitaxel, pattern = "^mt", col.name = "percent.mt") 
+drg_C57_Paclitaxel@meta.data
+
+#Data Exploration:
+out <- paste("images/",id,"_ViolinPlot_PreFilt.png",sep="")
+png(filename = out,units="in",width = 10,height = 7,res=300)
+VlnPlot(drg_C57_Paclitaxel , features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), ncol = 3)
+dev.off()
+
+#More data exploration:
+out <- paste("images/",id,"_QC_ViolinPlot.png",sep="")
+png(filename = out,units="in",width = 10,height = 7,res=300)
+plot1 <- FeatureScatter(drg_C57_Paclitaxel, feature1 = "nCount_RNA", feature2 = "percent.mt")
+plot2 <- FeatureScatter(drg_C57_Paclitaxel, feature1 = "nCount_RNA", feature2 = "nFeature_RNA")
+plot1 + plot2
+dev.off()
+
+#No Filter!
+
+#ScTransform: Normalization
+drg_C57_Paclitaxel <- SCTransform(drg_C57_Paclitaxel, vars.to.regress = "percent.mt")
+saveRDS(drg_C57_Paclitaxel, file = "rds/filter_norm.rds")
+drg_C57_Paclitaxel <- readRDS("rds/filter_norm.rds")
+
+#PCA: Principal Component Analysis.
+drg_C57_Paclitaxel  <- RunPCA(drg_C57_Paclitaxel , verbose = FALSE)
+
+#Create UMAP
+#PCS: 35 PCS.
+npc <- 1:30
+drg_C57_Paclitaxel <- FindNeighbors(drg_C57_Paclitaxel , dims = npc, verbose = FALSE)
+drg_C57_Paclitaxel <- FindClusters(drg_C57_Paclitaxel , verbose = FALSE, resolution = 0.8)
+levels(drg_C57_Paclitaxel$seurat_clusters)
+
+#UMAP geralmente fica melhor.
+drg_C57_Paclitaxel <- RunUMAP(drg_C57_Paclitaxel, dims = npc, verbose = FALSE)
+
+#Cell_Types:
+names <- strsplit(row.names(drg_C57_Paclitaxel@meta.data), "_")
+types <- vector()
+for(i in 1:length(names)){
+       types[i] <- names[[i]][6]
+}
+drg_C57_Paclitaxel@meta.data$celltype <- types
+table(types)
+
+#Image_UMAP:
+"Plot Paclitaxel"
+out <- paste("images\\",id,"_PaclitaxelCluster_UMAP.png",sep="")
+png(filename = out,units="in",width = 10,height = 7,res=300)
+DimPlot(drg_C57_Paclitaxel, reduction = "umap",pt.size=0.7,label = T)  
+dev.off()
+
+#Identification:
+"0 ------------------- Hip = NF1"
+table(drg_C57_Paclitaxel@meta.data$celltype[drg_C57_Paclitaxel@meta.data$seurat_clusters==0])
+
+"1 ------------------- Hip = PEP1"
+table(drg_C57_Paclitaxel@meta.data$celltype[drg_C57_Paclitaxel@meta.data$seurat_clusters==1])
+
+"2 ------------------- Hip = NF2"
+table(drg_C57_Paclitaxel@meta.data$celltype[drg_C57_Paclitaxel@meta.data$seurat_clusters==2])
+
+"3 ------------------- Hip = NP"
+table(drg_C57_Paclitaxel@meta.data$celltype[drg_C57_Paclitaxel@meta.data$seurat_clusters==3])
+
+"4 ------------------- Hip = CLTMR1"
+table(drg_C57_Paclitaxel@meta.data$celltype[drg_C57_Paclitaxel@meta.data$seurat_clusters==4])
+
+"5 ------------------- Hip = NP"
+table(drg_C57_Paclitaxel@meta.data$celltype[drg_C57_Paclitaxel@meta.data$seurat_clusters==5])
+
+"6 ------------------- Hip = PEP2"
+table(drg_C57_Paclitaxel@meta.data$celltype[drg_C57_Paclitaxel@meta.data$seurat_clusters==6])
+
+"7 ------------------- Hip = NP"
+table(drg_C57_Paclitaxel@meta.data$celltype[drg_C57_Paclitaxel@meta.data$seurat_clusters==7])
+
+"8 ------------------- Hip = PEP1"
+table(drg_C57_Paclitaxel@meta.data$celltype[drg_C57_Paclitaxel@meta.data$seurat_clusters==8])
+
+"9 ------------------- Hip = Satglia"
+table(drg_C57_Paclitaxel@meta.data$celltype[drg_C57_Paclitaxel@meta.data$seurat_clusters==9])
+
+"10 ------------------- Hip = SST"
+table(drg_C57_Paclitaxel@meta.data$celltype[drg_C57_Paclitaxel@meta.data$seurat_clusters==10])
+
+"11 ------------------- Hip = P"
+table(drg_C57_Paclitaxel@meta.data$celltype[drg_C57_Paclitaxel@meta.data$seurat_clusters==11])
+
+"12 ------------------- Hip = NF3"
+table(drg_C57_Paclitaxel@meta.data$celltype[drg_C57_Paclitaxel@meta.data$seurat_clusters==12])
+
+"13 ------------------- Hip = PEP1"
+table(drg_C57_Paclitaxel@meta.data$celltype[drg_C57_Paclitaxel@meta.data$seurat_clusters==13])
+
+"14 ------------------- Hip = NP"
+table(drg_C57_Paclitaxel@meta.data$celltype[drg_C57_Paclitaxel@meta.data$seurat_clusters==14])
+
+"15 ------------------- Hip = Fibro/Endo"
+table(drg_C57_Paclitaxel@meta.data$celltype[drg_C57_Paclitaxel@meta.data$seurat_clusters==15])
+
+"16 ------------------- Hip = SST"
+table(drg_C57_Paclitaxel@meta.data$celltype[drg_C57_Paclitaxel@meta.data$seurat_clusters==16])
+
+"17 ------------------- Hip = Schwann"
+table(drg_C57_Paclitaxel@meta.data$celltype[drg_C57_Paclitaxel@meta.data$seurat_clusters==17])
+
+#Idents:
+names <- c("NF1","PEP1","NF2","NP","CLTMR1",
+           "NP","PEP2","NP","PEP1","Satglia",
+           "SST","P","NF3","PEP1","NP","Fibro/Endo",
+           "SST","Schwann")
+names(names) <- levels(drg_C57_Paclitaxel)
+drg_C57_Paclitaxel <- RenameIdents(drg_C57_Paclitaxel, names)
+
+#Image_UMAP:
+"Plot Paclitaxel"
+out <- paste("images\\",id,"_PaclitaxelCluster_UMAP_annot.png",sep="")
+png(filename = out,units="in",width = 10,height = 7,res=300)
+DimPlot(drg_C57_Paclitaxel, reduction = "umap",pt.size=0.7,label = T)#+ 
+#ggtitle("Paclitaxel")  +  theme(plot.title = element_text(hjust = 0.55)) +
+#annotate("label", -6.5, -9.7 , label='CLTMR1',col='black',size = 3)+ 
+#annotate("label", 1, -8 , label='NF3',col='black',size = 3)+
+#annotate("label", 6.5, -8 , label='NF2',col='black',size = 3)+
+#annotate("label", 7, -4 , label='NF1',col='black',size = 3)+
+#annotate("label", 4, 3 , label='PEP1',col='black',size = 3)+
+#annotate("label", 0, 0, label='PEP2',col='black',size = 3)+
+#annotate("label", -2, 2, label='P',col='black',size = 3)+
+#annotate("label", -8.5, 7.5, label='NP',col='black',size = 3)+
+#annotate("label", -0.5, 12, label='SST',col='black',size = 3)+
+#annotate("label", -9.8, -0.1, label='Satglia',col='black',size = 3)+
+#annotate("label", -8.5, -3.5, label='Schwann',col='black',size = 3)+
+#annotate("label", -7, -0.7, label='Fibro/Endo',col='black',size = 3)
+dev.off()
+
+#Plots:,
+DotPlot(drg_C57_Paclitaxel,feature= c("Sucnr1","Ntrk2"))
+
+saveRDS(drg_C57_Paclitaxel, file = "rds/filter_norm_end.rds")
